@@ -1,11 +1,10 @@
 var Reflux = require('reflux');
-var EventEmitter = require('events').EventEmitter;
 var FluxCartActions = require('../actions/FluxCartActions');
 var _ = require('underscore');
 
 var _products = {}, _cartVisible = false;
 
-var CartStore = _.extend({}, EventEmitter.prototype, {
+var CartStore = {
   getCartItems: function() {
     return _products;
   },
@@ -35,7 +34,7 @@ var CartStore = _.extend({}, EventEmitter.prototype, {
   removeChangeListener: function(callback) {
     this.removeListener('change', callback);
   }
-});
+};
 
 CartStore = _.extend(CartStore, Reflux.createStore({
   listenables: FluxCartActions,
@@ -43,17 +42,17 @@ CartStore = _.extend(CartStore, Reflux.createStore({
   onAddToCart(sku, update) {
     update.quantity = sku in _products ? _products[sku].quantity + 1 : 1;
     _products[sku] = _.extend({}, _products[sku], update);
-    CartStore.emitChange();
+    this.trigger();
   },
 
   onUpdateCartVisible(cartVisible) {
     _cartVisible = cartVisible;
-    CartStore.emitChange();
+    this.trigger();
   },
 
   onRemoveFromCart(sku) {
     delete _products[sku];
-    CartStore.emitChange();
+    this.trigger();
   }
 }));
 

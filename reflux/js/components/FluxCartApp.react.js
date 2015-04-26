@@ -21,13 +21,13 @@ var FluxCartApp = React.createClass({
   },
 
   componentDidMount: function() {
-    ProductStore.addChangeListener(this._onChange);
-    CartStore.addChangeListener(this._onChange);
+    this._productStoreUnsubscribe = ProductStore.listen(this._onChange);
+    this._cartStoreUnsubscribe = CartStore.listen(this._onChange);
   },
 
   componentWillUnmount: function() {
-    ProductStore.removeChangeListener(this._onChange);
-    CartStore.removeChangeListener(this._onChange);
+    this._productStoreUnsubscribe();
+    this._cartStoreUnsubscribe();
   },
 
   render: function() {
