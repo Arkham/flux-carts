@@ -12,6 +12,13 @@ var ProductStore = {
   getSelected: function() {
     return _selected;
   },
+
+  payload: function() {
+    return {
+      product: this.getProduct(),
+      selectedProduct: this.getSelected(),
+    }
+  }
 };
 
 ProductStore = _.extend(ProductStore, Reflux.createStore({
@@ -20,12 +27,12 @@ ProductStore = _.extend(ProductStore, Reflux.createStore({
   onReceiveProduct(data) {
     _product = data[0];
     _selected = data[0].variants[0];
-    this.trigger();
+    this.trigger(ProductStore.payload());
   },
 
   onSelectProduct(index) {
     _selected = _product.variants[index];
-    this.trigger();
+    this.trigger(ProductStore.payload());
   }
 }));
 

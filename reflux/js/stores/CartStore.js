@@ -23,16 +23,13 @@ var CartStore = {
     return _cartVisible;
   },
 
-  emitChange: function() {
-    this.emit('change');
-  },
-
-  addChangeListener: function(callback) {
-    this.on('change', callback);
-  },
-
-  removeChangeListener: function(callback) {
-    this.removeListener('change', callback);
+  payload: function() {
+    return {
+      cartItems: this.getCartItems(),
+      cartCount: this.getCartCount(),
+      cartTotal: this.getCartTotal(),
+      cartVisible: this.getCartVisible()
+    };
   }
 };
 
@@ -42,17 +39,17 @@ CartStore = _.extend(CartStore, Reflux.createStore({
   onAddToCart(sku, update) {
     update.quantity = sku in _products ? _products[sku].quantity + 1 : 1;
     _products[sku] = _.extend({}, _products[sku], update);
-    this.trigger();
+    this.trigger(CartStore.payload());
   },
 
   onUpdateCartVisible(cartVisible) {
     _cartVisible = cartVisible;
-    this.trigger();
+    this.trigger(CartStore.payload());
   },
 
   onRemoveFromCart(sku) {
     delete _products[sku];
-    this.trigger();
+    this.trigger(CartStore.payload());
   }
 }));
 

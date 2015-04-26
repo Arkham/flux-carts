@@ -3,21 +3,11 @@ var CartStore = require('../stores/CartStore');
 var ProductStore = require('../stores/ProductStore');
 var FluxProduct = require('./FluxProduct.react');
 var FluxCart = require('./FluxCart.react');
-
-function getCartState() {
-  return {
-    product: ProductStore.getProduct(),
-    selectedProduct: ProductStore.getSelected(),
-    cartItems: CartStore.getCartItems(),
-    cartCount: CartStore.getCartCount(),
-    cartTotal: CartStore.getCartTotal(),
-    cartVisible: CartStore.getCartVisible()
-  };
-}
+var _ = require('underscore');
 
 var FluxCartApp = React.createClass({
   getInitialState: function() {
-    return getCartState();
+    return _.extend({}, ProductStore.payload(), CartStore.payload());
   },
 
   componentDidMount: function() {
@@ -47,8 +37,8 @@ var FluxCartApp = React.createClass({
     );
   },
 
-  _onChange: function() {
-    this.setState(getCartState());
+  _onChange: function(payload) {
+    this.setState(payload);
   }
 });
 
